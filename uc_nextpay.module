@@ -1,0 +1,239 @@
+<?php
+
+/**
+ * @file Provides Nextpay Payment Gateway for Ubercart 3.x
+ * @author "NextPay.ir" <info@nextpay.ir>
+ *
+ * @see http://www.nextpay.ir
+ *
+ * Copyright 2015-2016 - nextpay.ir - All rights reserved.
+ * For Licence, see README.txt and README.fa.txt
+ */
+
+/**
+ * Implements hook_menu()
+ */
+function uc_nextpay_menu() {
+    $items = array();
+
+    $items['cart/nextpay/complete/%'] = array(
+        'title' => 'Order complete',
+        'page callback' => 'uc_nextpay_complete_page',
+        'page arguments' => array(3),
+        'access callback' => 'uc_nextpay_completion_access',
+        'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+}
+
+/**
+ * Access callback for cart/nextpay/complete/%
+ */
+function uc_nextpay_completion_access() {
+    // All user have access to finish the payment.
+    return TRUE;
+}
+
+/**
+ * Menu callback for cart/nextpay/complete
+ */
+function uc_nextpay_complete_page($order_id) {
+    // Although Drupal has a built-in class autoloader, It's not compatible with ioncube.
+    // So we load the class manually to make sure.
+    require_once dirname(__FILE__) . '/nextpay.class.inc';
+
+    // Check if $order_id is valid
+    $order = NULL;
+
+
+    if (is_numeric($order_id)) {
+        // Load order object
+        $order_id = (int) $order_id;
+        $order = uc_order_load($order_id);
+    }
+
+    if (!is_object($order) OR $order_id != $_POST['order_id']) {
+        $msg = t('Order invalid.');
+        drupal_set_message($msg, 'error');
+        watchdog('nextpay', 'Invalid order id passed to uc_nextpay_complete_page()', WATCHDOG_ERROR);
+
+        return $msg;
+    }
+
+    // Get api key from module settings.
+    $apiKey = variable_get('uc_nextpay_ApiKey', '');
+    if (empty($apiKey)) {
+        $msg = t('Nextpay is not configured properly.');
+        drupal_set_message($msg, 'error');
+
+        return $msg;
+    }
+
+    $order_total = $order->order_total;
+
+    $parameters = array
+    (
+        'api_key'	=> $apiKey,
+        'order_id'	=> $order_id,
+        'trans_id' 	=> $_POST['trans_id'] ,
+        'amount'	=> $order_total,
+    );
+
+    // Build nextpay object with above parameters
+    $nextpay = new Nextpay_Payment();
+    $result = $nextpay->verify_request($parameters);
+
+    // Verify Transaction
+    if( $result != 0 ) {
+        $msg = t('Payment Faild!');
+        drupal_set_message($msg, 'error');
+        return $msg;
+    }else{
+        //Log payment success
+        watchdog('nextpay', 'Nextpay payment #%trans_id verification succeeded', array('%trans_id' => $_POST['trans_id']), WATCHDOG_INFO);
+        $message = t('Payment successful. Refernce: %trans_id', array('%trans_id' => $_POST['trans_id']));
+
+        uc_payment_enter($order->order_id, $order->payment_method, $order->order_total, 0, NULL, 'Paid Successfully');
+
+        $output = uc_cart_complete_sale($order, variable_get('uc_new_customer_login', FALSE));
+
+        $page = variable_get('uc_cart_checkout_complete_page', '');
+        if (!empty($page)) {
+            drupal_goto($page);
+        }
+
+        return '<p>' . $message . '</p>' . drupal_render($output);
+    }
+}
+
+/**
+ * Implements hook_uc_payment_method().
+ */
+function uc_nextpay_uc_payment_method() {
+    $path = drupal_get_path('module', 'uc_nextpay') . "/nextpay.png";
+
+    $title = theme('image', array(
+        'path' => $path,
+        'alt' => t('Nextpay Gateway'),
+        'title' => t('Nextpay Gateway'),
+        'attributes' => array(
+            'style' => 'margin-bottom: -5px; position: relative; top: 2px;',
+        ),
+    ));
+
+    $title .= t('Nextpay Gateway');
+
+    $methods = array();
+    $methods['nextpay'] = array(
+        'name'     => t('Nextpay Gateway'),
+        'title'    => $title,
+        'desc'     => t('Redirect to Nextpay Gateway to pay by credit card.'),
+        'callback' => 'uc_payment_method_nextpay',
+        'weight'   => 1,
+        'checkout' => TRUE,
+        'redirect' => 'uc_nextpay_pay_submission_form',
+    );
+
+    return $methods;
+}
+
+/**
+ * Payment method callback
+ */
+function uc_payment_method_nextpay($op, &$order, $form = NULL, &$form_state = NULL) {
+    switch ($op) {
+        case 'cart-process':
+            $_SESSION['pay_method'] = 'nextpay';
+
+            return NULL;
+            break;
+
+        case 'settings':
+            $form['uc_nextpay_ApiKey'] = array(
+                '#type'          => 'textfield',
+                '#title'         => t('Api Key'),
+                '#description'   => t('Your Nextpay Api Key.'),
+                '#default_value' => variable_get('uc_nextpay_ApiKey', ''),
+                '#size'          => 32,
+            );
+
+            $soap_options = array();
+            if (class_exists('SoapClient')) {
+                $soap_options['soapclient'] = t('PHP SoapClient class');
+            }
+            $form['uc_nextpay_soapmode'] = array(
+                '#type'          => 'radios',
+                '#title'         => t('Soap Mode'),
+                '#default_value' => variable_get('uc_nextpay_soapmode', 'soapclient'),
+                '#options'       => $soap_options,
+                '#required'      => TRUE,
+            );
+
+            return $form;
+            break;
+
+        default:
+            break;
+    }
+
+    //should not return anything. we don't know in which switch case it is
+}
+
+/**
+ * Form Builder.
+ *
+ * The payment form which will be submitted to the gateway.
+ */
+function uc_nextpay_pay_submission_form($form_state, $order) {
+    // Although Drupal has a built-in class autoloader, It's not compatible with ioncube.
+    // So we load the class manually to make sure.
+    require_once dirname(__FILE__) . '/nextpay.class.inc';
+
+    $apiKey = variable_get('uc_nextpay_ApiKey', '');
+
+    if (empty($apiKey)) {
+        drupal_set_message(t('Nextpay is not configured properly.'), 'error');
+
+        return array();
+    }
+
+    //Build parameters for payment request
+    $order_total = $order['build_info']['args'][0]->order_total;
+    $order_id = $order['build_info']['args'][0]->order_id;
+    $callbackURL = url("cart/nextpay/complete/{$order_id}", array('absolute' => TRUE));
+
+
+    $parameters = array
+    (
+        "api_key"=>$apiKey,
+        "order_id"=> $order_id,
+        "amount"=>$order_total,
+        "callback_uri"=>$callbackURL
+    );
+
+    //Build nextpay object with above parameters
+    $nextpay = new Nextpay_Payment($parameters);
+    $result = $nextpay->token();
+
+
+    if(intval($result->code) == -1){
+        $url = 'http://api.nextpay.org/gateway/payment/' . $result->trans_id ;
+    }else{
+        $msg = 'can not get token from nextpay : ' . $result->code ;
+        drupal_set_message($msg, 'error');
+        return array();
+    }
+
+
+    // Build the form
+    $form = array();
+    $form['#action'] = $url;
+
+    $form['submit'] = array(
+        '#type'  => 'submit',
+        '#value' => t('Submit Order')
+    );
+
+    return $form;
+}

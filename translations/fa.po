@@ -1,0 +1,203 @@
+# $Id$
+#
+# Persian translation of Drupal (general)
+# Copyright NextPay.ir <info@nextpay.ir>
+# Generated from files:
+#  nextpay.class.inc: n/a
+#  uc_nextpay.module: n/a
+#  uc_nextpay.info: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2016-10-31 20:33+0330\n"
+"PO-Revision-Date: 2016-09-06 21:02+0330\n"
+"Last-Translator: NextPay.ir <info@nextpay.ir>\n"
+"Language-Team: Persian <info@nextpay.ir>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Language: fa\n"
+"X-Generator: Poedit 1.6.9\n"
+
+#: nextpay.class.inc:161;176
+msgid "Can not request payment. !msg"
+msgstr "نمی تواند درخواست پرداخت را ارسال کند. !msg"
+
+#: nextpay.class.inc:208
+msgid "Error: $_GET[Authority] not available"
+msgstr "خطا: $_GET[Authority] قابل دسترس نیست"
+
+#: nextpay.class.inc:216
+msgid "Error: $_GET[Status] invalid"
+msgstr "خطا: کد وضعیت $_GET[Status] اشتباه است."
+
+#: nextpay.class.inc:238;254
+msgid "Transaction verification failed. RefID: %refid, Message: !message"
+msgstr "تایید تراکنش با شکست مواجه شد. شناسه ارجاع: %refid ، پیغام: !message"
+
+#: nextpay.class.inc:300
+msgid "Incomplete data."
+msgstr "داده ناقص است."
+
+#: nextpay.class.inc:303
+msgid "Invalid IP or MerchantID."
+msgstr "آدرس IP و یا کد پذیرنده اشتباه است."
+
+#: nextpay.class.inc:306
+msgid "Cannot pay this amount due to restrictions of the Shapark system."
+msgstr "به دلیل محدودیت های سیستم شاپرک، قادر به پرداخت این مبلغ نمی باشد."
+
+#: nextpay.class.inc:309
+msgid "Merchant's verify-level is below the accepted silver level."
+msgstr "سطح تایید پذیرنده، کمتر از سطح مورد پذیرش نقره ای می باشد."
+
+#: nextpay.class.inc:312
+msgid "Specified request was not found."
+msgstr "درخواست مشخص شده، پیدا نشد."
+
+#: nextpay.class.inc:315
+msgid "No actions found for this transaction."
+msgstr "هیچ عملیاتی برای این تراکنش پیدا نشد."
+
+#: nextpay.class.inc:318
+msgid "Transaction failed."
+msgstr "تراکنش با شکست مواجه شد."
+
+#: nextpay.class.inc:321
+msgid "Transaction's amount does not match with the paid amount."
+msgstr "مبلغ تراکنش با مبلغ پرداخت شده مطابقت ندارد."
+
+#: nextpay.class.inc:324
+msgid "Maximum transaction division exceeded."
+msgstr "از حد اکثر قسمت بندی تراکنش، عبور نموده است."
+
+#: nextpay.class.inc:327
+msgid "Access to requested method is denied."
+msgstr "دسترسی به روش درخواست شده، ممنوع می باشد."
+
+#: nextpay.class.inc:330
+msgid "Invalid data sent to AdditionalData() method."
+msgstr "داده های نامعتبر به متد AdditionalData() ارسال شده است."
+
+#: nextpay.class.inc:333
+msgid "The specified request is archived."
+msgstr "تقاضای مشخص شده، بایگانی شده است."
+
+#: nextpay.class.inc:336
+msgid "Action completed successfully"
+msgstr "عملیات با موفقیت انجام شد."
+
+#: nextpay.class.inc:339
+msgid ""
+"Payment was successfull but PaymentVerification() method is already done."
+msgstr "پرداخت موفقیت آمیز بود، اما تایید تراکنش قبلا انجام شده است."
+
+#: nextpay.class.inc:342
+msgid "Unknown error code."
+msgstr "کدخطای ناشناخته."
+
+#: nextpay.class.inc:345
+msgid "Error code: %code : %msg"
+msgstr "کد خطا: %code : %msg "
+
+#: uc_nextpay.module:61
+msgid "Order invalid."
+msgstr "سفارش نامعتبر است."
+
+#: uc_nextpay.module:71;224
+msgid "nextpay is not configured properly."
+msgstr "نکست پی به درستی پیکربندی نشده است."
+
+#: uc_nextpay.module:95
+msgid "No vaild authority sent by nextpay. Payment failed."
+msgstr "کد تاییدیه ی معتبر از نکست پی دریافت نشد. پرداخت با شکست مواجه شد."
+
+#: uc_nextpay.module:101;103
+msgid "Transaction not successful or cancelled by user."
+msgstr "تراکنش موفقیت آمیز نبوده و یا توسط کاربر لغو شده است."
+
+#: uc_nextpay.module:114
+msgid "An unexpected error occured."
+msgstr "یک خطای غیر منتظره رخ داد."
+
+#: uc_nextpay.module:122
+msgid "Payment successful. Refernce: %refid"
+msgstr "پرداخت موفقیت آمیز بود. شماره ارجاع را یاد داشت کنید: %refid"
+
+#: uc_nextpay.module:143;144;150;154
+msgid "nextpay Gateway"
+msgstr "درگاه پرداخت نکست پی"
+
+#: uc_nextpay.module:156
+msgid "Redirect to nextpay Gateway to pay by credit card."
+msgstr "هدایت به درگاه پرداخت نکست پی برای پرداخت توسط کارت اعتباری."
+
+#: uc_nextpay.module:178
+msgid "MerchantID"
+msgstr "کد پذیرنده"
+
+#: uc_nextpay.module:179
+msgid "Your nextpay account merchantID."
+msgstr "کد پذیرنده ی حساب نکست پی شما."
+
+#: uc_nextpay.module:186
+msgid "nextpay website language"
+msgstr "زبان سایت نکست پی"
+
+#: uc_nextpay.module:189
+msgid "Farsi"
+msgstr "فارسی"
+
+#: uc_nextpay.module:190
+msgid "English"
+msgstr "انگلیسی"
+
+#: uc_nextpay.module:194
+msgid "Nusoap library (Recommended)"
+msgstr "کتابخانه ی Nusoap (توصیه شده)"
+
+#: uc_nextpay.module:196
+msgid "PHP SoapClient class"
+msgstr "کلاس SoapClient در PHP"
+
+#: uc_nextpay.module:200
+msgid "Soap Mode"
+msgstr "حالت Soap"
+
+#: uc_nextpay.module:260
+msgid "Submit Order"
+msgstr "ارسال سفارش"
+
+#: uc_nextpay.module:63;97;103;121
+msgid "nextpay"
+msgstr "نکست پی"
+
+#: uc_nextpay.module:63
+msgid "Invalid order id passed to uc_nextpay_complete_page()"
+msgstr "شناسه ی سفارش نامعتبر به تابع complete_page() ارسال شده است."
+
+#: uc_nextpay.module:97
+msgid "No valid authority sent by nextpay."
+msgstr "کد تاییدیه معتبر توسط نکست پی ارسال نشده است."
+
+#: uc_nextpay.module:121
+msgid "nextpay payment #%refid verification succeeded"
+msgstr "پرداخت نکست پی با ارجاع #%refid با موفقیت تایید گردید."
+
+#: uc_nextpay.module:21
+msgid "Order complete"
+msgstr "تکمیل سفارش"
+
+#: uc_nextpay.info:0
+msgid "nextpay"
+msgstr "نکست پی"
+
+#: uc_nextpay.info:0
+msgid "A module for checkout using nextpay Gateway (www.tolooco.ir)"
+msgstr "یک ماژول برای پرداخت با درگاه پرداخت نکست پی (www.tolooco.ir)"
+
+#: uc_nextpay.info:0
+msgid "Ubercart - payment"
+msgstr "آبرکارت - پرداخت"
